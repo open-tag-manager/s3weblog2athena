@@ -2,6 +2,10 @@
 
 This product make prefer file name format for Athena partition.
 
+Copyright
+
+see ./LICENSE
+
 ## Motivation
 
 Want you analyze S3 web log? However, S3 web log format is not prefer for AWS Athena.

@@ -2,7 +2,7 @@
   "name": "s3weblog2athena",
   "version": "1.0.0",
   "main": "handler.js",
-  "license": "MIT",
+  "license": "Apache License 2.0",
   "dependencies": {
     "promise-util-task": "^0.0.3"
   },
