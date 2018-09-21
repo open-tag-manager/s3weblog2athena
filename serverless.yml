@@ -1,0 +1,52 @@
+service: s3weblog2athena
+
+custom:
+  defaultStage: dev
+  config:
+    dev: ${file(./config/dev.yml)}
+    prod: ${file(./config/prod.yml)}
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: region
+  stage: ${opt:stage, self:custom.defaultStage}
+  memorySize: 512
+  timeout: 30
+
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - "s3:ListBucket"
+      Resource:
+        - "arn:aws:s3:::${self:custom.config.${self:provider.stage}.FROM_S3_BUCKET}"
+    - Effect: 'Allow'
+      Action:
+        - "s3:GetObject"
+      Resource:
+        - "arn:aws:s3:::${self:custom.config.${self:provider.stage}.FROM_S3_BUCKET}/*"
+    - Effect: 'Allow'
+      Action:
+        - "s3:PutObject"
+      Resource:
+        - "arn:aws:s3:::${self:custom.config.${self:provider.stage}.TO_S3_BUCKET}/*"
+
+package:
+  include:
+    - handler.js
+  exclude:
+    - local.js
+    - Dockerfile
+    - config/**
+    - .idea/**
+    - '*.iml'
+    - README.md
+
+functions:
+  copyFile:
+    handler: handler.copyFile
+    environment:
+      TO_S3_BUCKET: "s3://${self:custom.config.${self:provider.stage}.TO_S3_BUCKET}/${self:custom.config.${self:provider.stage}.TO_S3_PREFIX}"
+      MODE: ${self:custom.config.${self:provider.stage}.MODE, 's3'}
+    events:
+      - sns: ${self:custom.config.${self:provider.stage}.SNS_ARN}

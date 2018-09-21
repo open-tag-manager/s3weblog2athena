@@ -1,0 +1,5 @@
+TO_S3_BUCKET: 'BUCKET'
+TO_S3_PREFIX: ''
+FROM_S3_BUCKET: 'BUCKET-LOG'
+SNS_ARN: 'arn:aws:sns:xxxx'
+MODE: 's3'

@@ -1,0 +1,13 @@
+{
+  "name": "s3weblog2athena",
+  "version": "1.0.0",
+  "main": "handler.js",
+  "license": "MIT",
+  "dependencies": {
+    "promise-util-task": "^0.0.3"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.139.0",
+    "lodash": "^4.17.4"
+  }
+}
