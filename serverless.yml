@@ -2,9 +2,6 @@ service: s3weblog2athena
 
 custom:
   defaultStage: dev
-  config:
-    dev: ${file(./config/dev.yml)}
-    prod: ${file(./config/prod.yml)}
 
 provider:
   name: aws
@@ -19,17 +16,17 @@ provider:
       Action:
         - "s3:ListBucket"
       Resource:
-        - "arn:aws:s3:::${self:custom.config.${self:provider.stage}.FROM_S3_BUCKET}"
+        - "arn:aws:s3:::${file(./config/${self:provider.stage}.yml):FROM_S3_BUCKET}"
     - Effect: 'Allow'
       Action:
         - "s3:GetObject"
       Resource:
-        - "arn:aws:s3:::${self:custom.config.${self:provider.stage}.FROM_S3_BUCKET}/*"
+        - "arn:aws:s3:::${file(./config/${self:provider.stage}.yml):FROM_S3_BUCKET}/*"
     - Effect: 'Allow'
       Action:
         - "s3:PutObject"
       Resource:
-        - "arn:aws:s3:::${self:custom.config.${self:provider.stage}.TO_S3_BUCKET}/*"
+        - "arn:aws:s3:::${file(./config/${self:provider.stage}.yml):TO_S3_BUCKET}/*"
 
 package:
   include:
@@ -46,7 +43,7 @@ functions:
   copyFile:
     handler: handler.copyFile
     environment:
-      TO_S3_BUCKET: "s3://${self:custom.config.${self:provider.stage}.TO_S3_BUCKET}/${self:custom.config.${self:provider.stage}.TO_S3_PREFIX}"
-      MODE: ${self:custom.config.${self:provider.stage}.MODE, 's3'}
+      TO_S3_BUCKET: "s3://${file(./config/${self:provider.stage}.yml):TO_S3_BUCKET}/${file(./config/${self:provider.stage}.yml):TO_S3_PREFIX}"
+      MODE: ${file(./config/${self:provider.stage}.yml):MODE, 's3'}
     events:
-      - sns: ${self:custom.config.${self:provider.stage}.SNS_ARN}
+      - sns: ${file(./config/${self:provider.stage}.yml):SNS_ARN}
